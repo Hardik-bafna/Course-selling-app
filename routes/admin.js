@@ -1,5 +1,7 @@
 const {Router} = require ("express");
 const adminRouter = Router();
+const{ adminmodel} = require("../db");
+console.log("MOngo");
 adminRouter.post("/signin",(req,res)=>{
 res.json(
   {
