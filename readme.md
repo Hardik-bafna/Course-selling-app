@@ -26,5 +26,3 @@ Built as a learning project to understand routing, authentication, and REST API 
 
 ---
 
-## 📁 Project Structure
-
