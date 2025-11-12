@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { usermodel } = require("../db");
+const { usermodel, purchasemodel } = require("../db");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { z } = require("zod");
@@ -83,8 +83,15 @@ userRouter.post("/signin", async (req, res) => {
 });
 
 // TEST ROUTE
-userRouter.get("/purchases",userMiddleware, (req, res) => {
-  res.json({ message: "purchases endpoint" });
+userRouter.get("/purchases",userMiddleware,async (req, res) => {
+const userid = req.userId;
+  const purchases = await purchasemodel.find({
+  userId : userid
+  })
+res.json({
+
+purchases
+})
 });
 
 module.exports = {
