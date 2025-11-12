@@ -1,11 +1,12 @@
 const { Router } = require("express");
-const { adminmodel } = require("../db");
+const { adminmodel, coursemodel } = require("../db");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { z } = require("zod");
+const {adminMiddleware} = require("../Middlewares/admin");
 
 const adminRouter = Router();
-const JWT_ADMIN_PASSWORD = "FUDgeYOU";
+const {JWT_ADMIN_PASSWORD} = require("../config");
 
 // Validation schemas
 const signupSchema = z.object({
@@ -81,29 +82,61 @@ adminRouter.post("/signup",async(req,res)=>{
     return res.status(500).json({ message: "Signup failed" });
   }
 })
-adminRouter.post("/createcourse",(req,res)=>{
-res.json(
+adminRouter.post("/createcourse",adminMiddleware,async(req,res)=>{
+const adminId = req.adminId;
+  const {title ,description ,price ,imgurl}= req.body;
+const course = await coursemodel.create({
+
+  title : title,
+  description : description,
+  price : price,
+  imgurl : imgurl,//create web3 saas
+  creatorId : adminId
+
+
+});
+  res.json(
   {
-  message : "createcourse endpoint"
+  message : "course created",
+    courseId : course._id
   })
 
 
 })
-adminRouter.put("/createcourse",(req,res)=>{
-res.json(
+adminRouter.put("/createcourse",adminMiddleware,async(req,res)=>{
+  const adminId = req.adminId;
+  const {title ,description ,price ,imgurl,courseId}= req.body;
+const course = await coursemodel.updateOne({
+  _id : courseId,
+  creatorId : adminId
+
+},{  title : title,
+  description : description,
+  price : price,
+  imgurl : imgurl
+
+
+});
+  res.json(
   {
-  message : "createcourse endpoint"
+  message : "course updated",
+    courseId : course._id
   })
 
 
 })
-adminRouter.get("/getcourses",(req,res)=>{
-res.json(
+adminRouter.get("/getcourses",adminMiddleware,async(req,res)=>{
+  const adminId = req.adminId;
+
+const course = await coursemodel.find({
+  creatorId : adminId
+
+});
+  res.json(
   {
-  message : "getcourse endpoint"
+  message : "courses",
+    course
   })
-
-
 })
 
 

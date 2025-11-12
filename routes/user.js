@@ -3,9 +3,9 @@ const { usermodel } = require("../db");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { z } = require("zod");
-
+const {userMiddleware}= require("../Middlewares/user");
 const userRouter = Router();
-const JWT_USER_PASSWORD = "FUDge";
+const {JWT_USER_PASSWORD }=require("../config");
 
 // Validation schemas
 const signupSchema = z.object({
@@ -83,7 +83,7 @@ userRouter.post("/signin", async (req, res) => {
 });
 
 // TEST ROUTE
-userRouter.get("/purchases", (req, res) => {
+userRouter.get("/purchases",userMiddleware, (req, res) => {
   res.json({ message: "purchases endpoint" });
 });
 
